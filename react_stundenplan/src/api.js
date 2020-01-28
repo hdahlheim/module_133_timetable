@@ -19,6 +19,7 @@ export async function getKlassen(id) {
 }
 
 export async function getZeitTafel(id) {
+  await wait()
   try {
     return await fetch(
       `https://sandbox.gibm.ch/tafel.php?klasse_id=${id}`
@@ -26,6 +27,12 @@ export async function getZeitTafel(id) {
   } catch (err) {
     throw err
   }
+}
+
+async function wait() {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), 300)
+  })
 }
 
 export default {

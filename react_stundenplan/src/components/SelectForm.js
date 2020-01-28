@@ -1,6 +1,6 @@
 import React from 'react'
 
-export function SelectForm({ name, value, onChange, options }) {
+function SelectForm({ name, value, onChange, options }) {
   return (
     <label className="block">
       <span className="font-semibold">{name}</span>
@@ -21,4 +21,5 @@ export function SelectForm({ name, value, onChange, options }) {
     </label>
   )
 }
-export default { SelectForm }
+
+export default SelectForm
