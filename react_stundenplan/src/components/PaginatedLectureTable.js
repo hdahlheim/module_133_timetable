@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import LectureTable from './LectureTable'
+import LectureTable, { LectureTableLoading } from './LectureTable'
 import { getZeitTafel } from '../api'
 
 function PaginatedLectureTable({ schoolClass }) {
@@ -13,7 +13,7 @@ function PaginatedLectureTable({ schoolClass }) {
     }
   }, [schoolClass])
 
-  return schdual ? <LectureTable schdual={schdual} /> : <div>Loading...</div>
+  return schdual ? <LectureTable schdual={schdual} /> : <LectureTableLoading />
 }
 
 export default PaginatedLectureTable

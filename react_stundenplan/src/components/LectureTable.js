@@ -24,6 +24,35 @@ export function LectureRow({ lecture }) {
   )
 }
 
+export function LectureTableLoading() {
+  return (
+    <table className="w-full bg-gray-100 rounded shadow ">
+      <thead className="h-12 border-b-2 rounded-t">
+        <tr>
+          <th className="px-4 text-left">Wochentag/Datum</th>
+          <th className="px-2">Von</th>
+          <th className="px-2">Bis</th>
+          <th className="px-4 text-left">Fach</th>
+          <th className="px-4 text-left">Lehrer</th>
+          <th className="px-4 text-left">Zimmer</th>
+          <th className="px-4 text-left">Bemerkung</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr className="h-12 text-sm border-b border-gray-200">
+          <td className="px-4">Loading...</td>
+          <td className="px-2 text-center">Loading...</td>
+          <td className="px-2 text-center">Loading...</td>
+          <td className="px-4">Loading...</td>
+          <td className="px-4">Loading...</td>
+          <td className="px-4">Loading...</td>
+          <td className="px-4">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+
 export function LectureTable({ schdual }) {
   return (
     <table className="w-full bg-gray-100 rounded shadow">
