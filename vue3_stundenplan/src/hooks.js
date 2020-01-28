@@ -15,7 +15,7 @@ export function useSaveInUrl(job, klasse) {
 
 export function useRestoreFromUrl(job, klasse) {
   let savedSelect =
-    localStorage.getItem('savedSelect') || window.location.hash.slice(1)
+    window.location.hash.slice(1) || localStorage.getItem('savedSelect')
   let [urlJob, urlklasse] = atob(savedSelect).split('-')
   if (urlJob && urlklasse) {
     job.value = urlJob

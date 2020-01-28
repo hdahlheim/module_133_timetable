@@ -6,9 +6,9 @@
       :value="$props.modelValue"
       @input="e => $emit('update:modelValue', e.target.value)"
     >
-      <option disabled :selected="$props.modelValue === ''"
-        >{{ name }} wählen</option
-      >
+      <option disabled :selected="$props.modelValue === ''">
+        {{ name }} wählen.
+      </option>
       <option
         v-for="value in values"
         :selected="$props.modelValue === value[`${name.toLowerCase()}_id`]"

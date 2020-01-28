@@ -4,7 +4,6 @@
       <div>
         <SelectForm v-model="job" :name="'Beruf'" :values="berufe" />
       </div>
-
       <div v-if="job">
         <div class="hidden sm:block">
           <div class="py-5">

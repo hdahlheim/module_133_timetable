@@ -52,9 +52,7 @@ export default {
   },
   async setup(props) {
     let lectures = ref([])
-
     lectures.value = await getZeitTafel(props.klasse)
-
     const toHumanReadableDate = date =>
       new Date(date).toLocaleDateString('de-CH', {
         weekday: 'long',
