@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v1.9.8/dist/alpine.js" defer></script>
+  <title>Document</title>
+</head>
+<body>
+
+  <main x-data="data()" x-init="() => getJobs()">
+
+    <div>
+      <select x-model="currentJob" @input="getKlassen()">
+        <option :value="null" default>Beruf Wählen</option>
+      <template x-for="beruf in berufe">
+        <option :key="beruf.beruf_id" :value="beruf.beruf_id" x-text="beruf.beruf_name"></option>
+      </template>
+      </select>
+    </div>
+
+    <template x-if="currentJob">
+    <div>
+      <select x-model="currentClass" :key="currentJob" @input="getLectures()">
+        <option :value="null" default>Klasse Wählen</option>
+      <template x-for="klasse in klassen">
+        <option :value="klasse.klasse_id" x-text="klasse.klasse_name"></option>
+      </template>
+      </select>
+    </div>
+    </template>
+
+    <template x-if="showLectures">
+    <table :key="currentClass" class="w-full bg-gray-100 rounded shadow">
+      <thead class="border-4 border-transparent rounded-t">
+        <tr class="">
+          <th class="px-4 text-left">Wochentag/Datum</th>
+          <th class="px-2">Von</th>
+          <th class="px-2">Bis</th>
+          <th class="px-4 text-left">Fach</th>
+          <th class="px-4 text-left">Lehrer</th>
+          <th class="px-4 text-left">Zimmer</th>
+          <th class="px-4 text-left">Bemerkung</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="lecture in lectures">
+        <tr class="h-12 text-sm border-b border-gray-200">
+          <td class="px-4" x-text="toHumanReadableDate(lecture.tafel_datum)"></td>
+          <td class="px-2 text-center" x-text="toShortTime(lecture.tafel_von)"></td>
+          <td class="px-2 text-center" x-text="toShortTime(lecture.tafel_bis)"></td>
+          <td class="px-4" x-text="lecture.tafel_longfach"></td>
+          <td class="px-4" x-text="lecture.tafel_lehrer"></td>
+          <td class="px-4" x-text="lecture.tafel_raum"></td>
+          <td class="px-4" x-text="lecture.tafel_kommentar"></td>
+        </tr>
+        </template>
+      </tbody>
+    </table>
+    </template>
+  </main>
+
+
+  <script>
+    function data () {
+      return {
+        currentJob: null,
+        currentClass: null,
+        showLectures: false,
+        berufe: [],
+        klassen: [],
+        lectures: [],
+        getJobs () {
+          fetch('http://sandbox.gibm.ch/berufe.php')
+            .then(res => res.json())
+            .then(berufe => {
+              this.berufe = berufe
+            })
+        },
+        getKlassen() {
+          this.lectures = []
+          this.showLectures = false
+          setTimeout(() => {
+            console.log(this.currentJob)
+            fetch(`http://sandbox.gibm.ch/klassen.php?beruf_id=${this.currentJob}`)
+              .then(res => {
+                if (res.ok) {
+                  return res.json()
+                }
+              })
+              .then(klassen => {
+              this.klassen = klassen
+            })
+          }, 50)
+        },
+        getLectures() {
+          setTimeout(() => {
+            fetch(`http://sandbox.gibm.ch/tafel.php?klasse_id=${this.currentClass}&woche=07-2020`)
+              .then(res => {
+                if (res.ok) {
+                  return res.json()
+                }
+              })
+              .then(lectures => {
+              this.lectures = lectures
+              this.showLectures = true
+            })
+          }, 50)
+        },
+        toHumanReadableDate(date) {
+          return new Date(date).toLocaleDateString('de-CH', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })
+        },
+        toShortTime (time) {
+          return time.slice(0, 5)
+        }
+      }
+    }
+  </script>
+</body>
+</html>
