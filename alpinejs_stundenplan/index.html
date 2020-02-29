@@ -4,30 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v1.9.8/dist/alpine.js" defer></script>
-  <title>Document</title>
+  <title>Alpine.js Stundenplan</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="h-screen bg-gray-200">
 
-  <main x-data="data()" x-init="() => getJobs()">
+  <main class="container p-10 mx-auto" x-data="data()" x-init="() => getJobs()">
 
-    <div>
-      <select x-model="currentJob" @input="getKlassen()">
+    <label class="block">
+      <span class="font-semibold">Beruf</span>
+      <select class="block w-full shadow form-select" x-model="currentJob" @input="getKlassen()">
         <option :value="null" default>Beruf Wählen</option>
       <template x-for="beruf in berufe">
         <option :key="beruf.beruf_id" :value="beruf.beruf_id" x-text="beruf.beruf_name"></option>
       </template>
       </select>
-    </div>
+    </label>
 
     <template x-if="currentJob">
-    <div>
-      <select x-model="currentClass" :key="currentJob" @input="getLectures()">
+    <label class="block">
+      <span class="font-semibold">Beruf</span>
+      <select class="block w-full shadow form-select" x-model="currentClass" :key="currentJob" @input="getLectures()">
         <option :value="null" default>Klasse Wählen</option>
       <template x-for="klasse in klassen">
         <option :value="klasse.klasse_id" x-text="klasse.klasse_name"></option>
       </template>
       </select>
-    </div>
+    </label>
     </template>
 
     <template x-if="showLectures">
