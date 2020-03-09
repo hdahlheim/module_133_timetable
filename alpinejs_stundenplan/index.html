@@ -30,7 +30,7 @@
         </div>
       </div>
       <label class="block">
-        <span class="font-semibold">Beruf</span>
+        <span class="font-semibold">Klasse</span>
         <select class="block w-full shadow form-select" x-model="currentClass" :key="currentJob" @input="getLectures()">
           <option :value="null" default>Klasse Wählen</option>
           <template x-for="klasse in klassen">
