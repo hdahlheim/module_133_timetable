@@ -2,14 +2,14 @@ import React from 'react'
 
 function SelectForm({ name, value, onChange, options }) {
   return (
-    <label className="block">
+    <label className="block transition-opacity">
       <span className="font-semibold">{name}</span>
       <select
         className="block w-full shadow form-select"
         value={value}
         onChange={onChange}
       >
-        <option value="" hidden disabled>
+        <option value="" disabled>
           {name} wählen
         </option>
         {options.map((value, index) => (

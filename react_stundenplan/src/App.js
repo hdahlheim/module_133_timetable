@@ -1,29 +1,29 @@
-import React, { useState, useEffect, Fragment } from 'react'
-import { getBerufe, getKlassen } from './api'
+import React, { Fragment } from 'react'
 import Spacer from './components/Spacer'
 import SelectForm from './components/SelectForm'
-import PaginatedLectureTable from './components/PaginatedLectureTable'
-import { useRestorFromUrl, useSaveInUrl } from './hooks'
+import {
+  useJobs,
+  useSchoolClass,
+  useDateCalc,
+  useSchdual,
+  usePersistedState,
+} from './hooks'
+import { Transition } from './components/Transition'
+import LectureTable from './components/LectureTable'
+import Navigation from './components/Navigation'
 
 function App() {
-  let [savedJob, savedClass] = useRestorFromUrl()
-  let [berufe, setBerufe] = useState([])
-  let [schoolClasses, setSchoolClasses] = useState([])
-  let [selectedJob, setSelectedJob] = useState(savedJob)
-  let [selectedClass, setSelectedClass] = useState(savedClass)
-  useSaveInUrl(selectedJob, selectedClass)
+  let [selectedJob, setSelectedJob] = usePersistedState('jobId', true)
+  let [selectedClass, setSelectedClass] = usePersistedState('classId')
 
-  useEffect(() => {
-    getBerufe().then(berufe => setBerufe(berufe))
-  }, [])
+  let { getWeekString } = useDateCalc()
 
-  useEffect(() => {
-    if (selectedJob) {
-      getKlassen(selectedJob).then(schoolClasses => {
-        setSchoolClasses(schoolClasses)
-      })
-    }
-  }, [selectedJob])
+  let { jobs: berufe, loading: loadingJobs } = useJobs()
+  let { schoolClasses, loading: loadingClass } = useSchoolClass(selectedJob)
+  let { schdual, loading: loadingSchdual } = useSchdual(
+    selectedClass,
+    getWeekString
+  )
 
   let handelSelect = event => {
     setSelectedClass('')
@@ -37,16 +37,34 @@ function App() {
   return (
     <main className="h-screen bg-gray-200">
       <div className="container p-10 mx-auto">
-        <SelectForm
-          value={selectedJob}
-          name="Beruf"
-          onChange={handelSelect}
-          options={berufe}
-        />
+        <Transition
+          enterFrom="opacity-0"
+          enter="duration-300 ease-out"
+          enterTo="opacity-100"
+          leaveFrom="opacity-100"
+          leave="duration-200 ease-in"
+          leaveTo="opacity-0"
+          show={!loadingJobs}
+        >
+          <SelectForm
+            value={selectedJob}
+            name="Beruf"
+            onChange={handelSelect}
+            options={berufe}
+          />
+        </Transition>
 
-        {schoolClasses.length > 0 && (
-          <Fragment>
-            <Spacer />
+        <Spacer />
+        {selectedJob && (
+          <Transition
+            enterFrom="opacity-0"
+            enter="duration-300 ease-out"
+            enterTo="opacity-100"
+            leaveFrom="opacity-100"
+            leave="duration-200 ease-in"
+            leaveTo="opacity-0"
+            show={!loadingClass}
+          >
             <SelectForm
               value={selectedClass}
               key={selectedJob}
@@ -54,16 +72,34 @@ function App() {
               onChange={handelClassSelect}
               options={schoolClasses}
             />
-          </Fragment>
+          </Transition>
         )}
 
         {selectedClass && (
           <Fragment>
             <Spacer />
-            <PaginatedLectureTable
-              key={selectedClass}
-              schoolClass={selectedClass}
-            />
+            <Transition
+              enterFrom="opacity-0"
+              enter="duration-300 ease-out"
+              enterTo="opacity-100"
+              leaveFrom="opacity-100"
+              leave="duration-200 ease-in"
+              leaveTo="opacity-0"
+              show={!!selectedClass}
+            >
+              <Navigation />
+            </Transition>
+            <Transition
+              enterFrom="opacity-0"
+              enter="duration-300 ease-out"
+              enterTo="opacity-100"
+              leaveFrom="opacity-100"
+              leave="duration-200 ease-in"
+              leaveTo="opacity-0"
+              show={!loadingSchdual}
+            >
+              <LectureTable schdual={schdual} />
+            </Transition>
           </Fragment>
         )}
       </div>

@@ -26,7 +26,7 @@ export function LectureRow({ lecture }) {
 
 export function LectureTableLoading() {
   return (
-    <table className="w-full bg-gray-100 rounded shadow ">
+    <table className="w-full transition-all bg-gray-100 rounded shadow">
       <thead className="h-12 border-b-2 rounded-t">
         <tr>
           <th className="px-4 text-left">Wochentag/Datum</th>
@@ -54,10 +54,17 @@ export function LectureTableLoading() {
 }
 
 export function LectureTable({ schdual }) {
+  if (!schdual.length)
+    return (
+      <div className="w-full transition-opacity bg-gray-100 rounded shadow">
+        <p className="p-8 font-semibold text-center">Keine Daten verfügbar</p>
+      </div>
+    )
+
   return (
-    <table className="w-full bg-gray-100 rounded shadow">
+    <table className="w-full transition-opacity bg-gray-100 rounded shadow">
       <thead className="border-4 border-transparent rounded-t">
-        <tr className="">
+        <tr>
           <th className="px-4 text-left">Wochentag/Datum</th>
           <th className="px-2">Von</th>
           <th className="px-2">Bis</th>

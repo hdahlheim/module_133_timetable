@@ -1,8 +1,10 @@
 export async function getBerufe() {
   try {
-    return await fetch('https://sandbox.gibm.ch/berufe.php').then(res =>
-      res.json()
-    )
+    return await fetch('https://sandbox.gibm.ch/berufe.php')
+      .then(res => res.json())
+      .then(jobs => {
+        return jobs.filter(el => el.beruf_name !== '1')
+      })
   } catch (err) {
     throw err
   }
@@ -18,11 +20,11 @@ export async function getKlassen(id) {
   }
 }
 
-export async function getZeitTafel(id) {
+export async function getZeitTafel(id, week) {
   await wait()
   try {
     return await fetch(
-      `https://sandbox.gibm.ch/tafel.php?klasse_id=${id}`
+      `https://sandbox.gibm.ch/tafel.php?klasse_id=${id}&woche=${week}`
     ).then(res => res.json())
   } catch (err) {
     throw err
