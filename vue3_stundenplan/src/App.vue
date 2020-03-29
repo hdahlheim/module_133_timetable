@@ -2,38 +2,38 @@
   <main id="app" class="h-screen bg-gray-200">
     <div class="container p-10 mx-auto">
       <div>
-        <SelectForm v-model="job" :name="'Beruf'" :values="berufe" />
+        <SelectForm v-model="jobId" name="Beruf" :values="jobs" />
       </div>
-      <div v-if="job">
+      <div v-if="jobId">
         <div class="hidden sm:block">
           <div class="py-5">
             <hr class="h-px text-gray-500" />
           </div>
         </div>
-        <Suspense>
-          <template #default>
-            <AsyncClassSelect v-model="klasse" :job="job" :key="job" />
-          </template>
-          <template #fallback>
-            ...loading
-          </template>
-        </Suspense>
+        <SelectForm name="Klasse" v-model="classId" :values="classes" />
       </div>
-
-      <div v-if="klasse">
+      <div v-if="classId">
         <div class="hidden sm:block">
           <div class="py-5">
             <hr class="h-px text-gray-500" />
           </div>
         </div>
-        <Suspense>
-          <template #default>
-            <LectureTable :key="klasse" :klasse="klasse" />
-          </template>
-          <template #fallback>
-            <LectureTableLoading />
-          </template>
-        </Suspense>
+        <Pagination />
+        <transition
+          mode="out-in"
+          enter-from-class="opacity-0"
+          enter-active-class="duration-500 ease-out"
+          enter-to-class="opacity-100"
+          leave-from-class="opacity-100"
+          leave-active-class="duration-300 ease-in"
+          leave-to-class="opacity-0"
+        >
+          <LectureTable
+            class="transition-all"
+            :key="`${classId}-${weekString}`"
+            :lectures="lectures"
+          />
+        </transition>
       </div>
     </div>
 
@@ -50,57 +50,49 @@
 </template>
 
 <script>
-import { ref, onMounted, computed, watch, onErrorCaptured } from 'vue'
+import { ref, onErrorCaptured } from 'vue'
 import SelectForm from './components/SelectForm'
-import AsyncClassSelect from './components/AsyncClassSelect'
+// import AsyncClassSelect from './components/AsyncClassSelect'
 import LectureTable from './components/LectureTable'
-import LectureTableLoading from './components/LectureTableLoading'
-import { getBerufe } from './api'
-import { useRestoreFromUrl, useSaveInUrl } from './hooks'
+// import LectureTableLoading from './components/LectureTableLoading'
+import Pagination from './components/Pagination'
+import { usePersistedState, useJobs, useLectures, useClasses } from './hooks'
+import { useWeekCalculator } from './WeekCalculator'
 
 export default {
   name: 'app',
   components: {
-    AsyncClassSelect,
     LectureTable,
-    LectureTableLoading,
+    // LectureTableLoading,
     SelectForm,
+    Pagination,
   },
   setup() {
-    let job = ref('')
-    let klasse = ref('')
+    let jobId = usePersistedState('jobID', true)
+    let classId = usePersistedState('classID')
+    let { weekString } = useWeekCalculator()
+
+    let jobs = useJobs()
+
+    let classes = useClasses(jobId)
+
+    let lectures = useLectures(classId, weekString)
+
     let error = ref(null)
-    let allberufe = ref([])
 
-    useRestoreFromUrl(job, klasse)
-
-    useSaveInUrl(job, klasse)
-
-    onErrorCaptured(() => {
+    onErrorCaptured(e => {
+      console.log(e)
       error.value = 'Uh oh. Something went wrong!'
       return true
     })
 
-    onMounted(async () => {
-      allberufe.value = await getBerufe()
-    })
-
-    watch(
-      () => job.value,
-      () => {
-        klasse.value = ''
-      },
-      { lazy: true }
-    )
-
-    let berufe = computed(
-      () => allberufe.value.filter(b => b.beruf_id !== '25') || []
-    )
-
     return {
-      job,
-      klasse,
-      berufe,
+      jobId,
+      jobs,
+      classId,
+      classes,
+      lectures,
+      weekString,
       error,
     }
   },

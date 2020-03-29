@@ -1,21 +1,23 @@
 <template>
   <label class="block">
-    <span class="font-semibold">{{ name }}</span>
+    <span class="font-semibold">{{ $props.name }}</span>
     <select
       class="block w-full shadow form-select"
       :value="$props.modelValue"
       @input="e => $emit('update:modelValue', e.target.value)"
     >
       <option disabled :selected="$props.modelValue === ''">
-        {{ name }} wählen.
+        {{ $props.name }} wählen.
       </option>
       <option
-        v-for="value in values"
-        :selected="$props.modelValue === value[`${name.toLowerCase()}_id`]"
-        :value="value[`${name.toLowerCase()}_id`]"
-        :key="value[`${name.toLowerCase()}_id`]"
+        v-for="value in $props.values"
+        :selected="
+          $props.modelValue === value[`${$props.name.toLowerCase()}_id`]
+        "
+        :value="value[`${$props.name.toLowerCase()}_id`]"
+        :key="value[`${$props.name.toLowerCase()}_id`]"
       >
-        {{ value[`${name.toLowerCase()}_name`] }}
+        {{ value[`${$props.name.toLowerCase()}_name`] }}
       </option>
     </select>
   </label>

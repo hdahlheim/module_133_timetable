@@ -1,5 +1,5 @@
 <template>
-  <SelectForm :name="'Klasse'" :values="klassen" />
+  <SelectForm name="Klasse" :values="klassen" />
 </template>
 
 <script>

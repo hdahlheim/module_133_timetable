@@ -1,5 +1,5 @@
 <template>
-  <table class="w-full bg-gray-100 rounded shadow ">
+  <table v-if="lectures.length" class="w-full bg-gray-100 rounded shadow ">
     <thead class="h-12 border-b-2 rounded-t">
       <tr>
         <th class="px-4 text-left">Wochentag/Datum</th>
@@ -41,18 +41,19 @@
       </tr>
     </tbody>
   </table>
+  <div v-else class="p-6 text-center bg-white rounded shadow">
+    <p class="font-semibold font">
+      No data for this week, there might be no school!
+    </p>
+  </div>
 </template>
 
 <script>
-import { ref } from 'vue'
-import { getZeitTafel } from '../api'
 export default {
   props: {
-    klasse: String,
+    lectures: Array,
   },
-  async setup(props) {
-    let lectures = ref([])
-    lectures.value = await getZeitTafel(props.klasse)
+  setup(props) {
     const toHumanReadableDate = date =>
       new Date(date).toLocaleDateString('de-CH', {
         weekday: 'long',
@@ -64,7 +65,7 @@ export default {
     const toShortTime = time => time.slice(0, 5)
 
     return {
-      lectures,
+      lectures: props.lectures,
       toHumanReadableDate,
       toShortTime,
     }
