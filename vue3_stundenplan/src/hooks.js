@@ -42,7 +42,9 @@ export function useLectures(classId, weekString) {
   let state = ref([])
 
   watch([classId, weekString], async () => {
-    state.value = await getZeitTafel(classId.value, weekString.value)
+    if (classId.value !== '') {
+      state.value = await getZeitTafel(classId.value, weekString.value)
+    }
   })
 
   return state

@@ -2,17 +2,27 @@
   <main id="app" class="h-screen bg-gray-200">
     <div class="container p-10 mx-auto">
       <div>
-        <SelectForm v-model="jobId" name="Beruf" :values="jobs" />
+        <SelectForm
+          :value="jobId"
+          @update="handelJobSelect"
+          name="Beruf"
+          :values="jobs"
+        />
       </div>
-      <div v-if="jobId">
+      <div v-show="jobId">
         <div class="hidden sm:block">
           <div class="py-5">
             <hr class="h-px text-gray-500" />
           </div>
         </div>
-        <SelectForm name="Klasse" v-model="classId" :values="classes" />
+        <SelectForm
+          name="Klasse"
+          :value="classId"
+          @update="handelClassSelect"
+          :values="classes"
+        />
       </div>
-      <div v-if="classId">
+      <div v-show="classId">
         <div class="hidden sm:block">
           <div class="py-5">
             <hr class="h-px text-gray-500" />
@@ -52,9 +62,7 @@
 <script>
 import { ref, onErrorCaptured } from 'vue'
 import SelectForm from './components/SelectForm'
-// import AsyncClassSelect from './components/AsyncClassSelect'
 import LectureTable from './components/LectureTable'
-// import LectureTableLoading from './components/LectureTableLoading'
 import Pagination from './components/Pagination'
 import { usePersistedState, useJobs, useLectures, useClasses } from './hooks'
 import { useWeekCalculator } from './WeekCalculator'
@@ -63,7 +71,6 @@ export default {
   name: 'app',
   components: {
     LectureTable,
-    // LectureTableLoading,
     SelectForm,
     Pagination,
   },
@@ -77,6 +84,15 @@ export default {
     let classes = useClasses(jobId)
 
     let lectures = useLectures(classId, weekString)
+
+    const handelJobSelect = val => {
+      classId.value = ''
+      jobId.value = val
+    }
+
+    const handelClassSelect = val => {
+      classId.value = val
+    }
 
     let error = ref(null)
 
@@ -93,6 +109,8 @@ export default {
       classes,
       lectures,
       weekString,
+      handelJobSelect,
+      handelClassSelect,
       error,
     }
   },
