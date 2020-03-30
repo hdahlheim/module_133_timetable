@@ -7,7 +7,6 @@
         class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 rounded-lg shadow"
       >
         <table class="min-w-full">
-          <!-- <table class="w-full bg-gray-100 rounded shadow md:static "> -->
           <thead class="">
             <tr>
               <th

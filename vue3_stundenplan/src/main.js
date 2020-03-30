@@ -4,6 +4,6 @@ import { WeekCalculatorProvider, createWeekCalculator } from './WeekCalculator'
 
 const weekCalc = createWeekCalculator()
 
-const app = createApp()
+const app = createApp(AppView)
 app.provide(WeekCalculatorProvider, weekCalc)
-app.mount(AppView, '#app')
+app.mount('#app')
