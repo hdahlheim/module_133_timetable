@@ -21,7 +21,7 @@ export function usePersistedState(key, destructive = false) {
       url.set(key, state)
       window.history.replaceState(null, 'search', `?${url.toString()}`)
     }
-  }, [key, state])
+  }, [key, state, destructive])
 
   return [state, setState]
 }
