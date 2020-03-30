@@ -21,6 +21,10 @@ function _getWeekAndYearString(date) {
   return `${weekNumber}-${yearStart.getFullYear()}`
 }
 
+/**
+ * Vue wrapper for the week calculator.
+ * @param {String} initialDate
+ */
 export function createWeekCalculator(initialDate = null) {
   const date = initialDate ? new Date(initialDate) : new Date()
   const time = date.getTime()
@@ -48,13 +52,22 @@ export function createWeekCalculator(initialDate = null) {
   }
 }
 
+/**
+ * Provider/Injection Key
+ */
 export const WeekCalculatorProvider = Symbol('WeekCalculatorProvider')
 
+/**
+ * Provider wrapper
+ */
 export function provideWeekCalculator() {
   const date = createWeekCalculator()
   provide(WeekCalculatorProvider, date)
 }
 
+/**
+ * Injection wrapper
+ */
 export function useWeekCalculator() {
   return inject(WeekCalculatorProvider)
 }

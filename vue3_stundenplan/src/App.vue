@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <Portal target="#portalTaget">
+    <Portal target="#portalTarget">
       <div v-if="error" class="absolute inset-x-0 top-0 max-w-md m-4 mx-auto">
         <p
           class="px-4 py-2 text-red-800 bg-red-300 border border-red-700 rounded-sm"
@@ -75,14 +75,18 @@ export default {
     Pagination,
   },
   setup() {
+    // Get persisted state
     const jobId = usePersistedState('jobID', true)
     const classId = usePersistedState('classID')
     const { weekString } = useWeekCalculator()
 
+    // get job list
     const jobs = useJobs()
 
+    // get class list
     const classes = useClasses(jobId)
 
+    // get lectures
     const lectures = useLectures(classId, weekString)
 
     const handelJobSelect = val => {
@@ -98,7 +102,7 @@ export default {
 
     onErrorCaptured(e => {
       console.log(e)
-      error.value = 'Uh oh. Something went wrong!'
+      error.value = 'Uh oh. Something went wrong! Please reload the page.'
       return true
     })
 
