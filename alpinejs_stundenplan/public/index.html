@@ -313,7 +313,7 @@
     }
 
     async function getJobs () {
-      data = await fetch(`http://sandbox.gibm.ch/berufe.php?`)
+      data = await fetch(`https://sandbox.gibm.ch/berufe.php`)
         .then(res => {
         if (res.ok) {
           return res.json()
@@ -322,7 +322,7 @@
       return data
     }
     async function getClasses (jobId) {
-      data = await fetch(`http://sandbox.gibm.ch/klassen.php?beruf_id=${jobId}`)
+      data = await fetch(`https://sandbox.gibm.ch/klassen.php?beruf_id=${jobId}`)
         .then(res => {
         if (res.ok) {
           return res.json()
@@ -332,7 +332,7 @@
     }
     async function getLectures (classId, week) {
       try {
-        data = await fetch(`http://sandbox.gibm.ch/tafel.php?klasse_id=${classId}&woche=${week}`)
+        data = await fetch(`https://sandbox.gibm.ch/tafel.php?klasse_id=${classId}&woche=${week}`)
           .then(res => {
           if (res.ok) {
             return res.json()
