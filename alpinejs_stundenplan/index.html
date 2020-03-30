@@ -6,17 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.2.2/dist/alpine.min.js" defer></script>
-  <title>Alpine.js Stundenplan</title>
+  <title>GIBM Stundenplan Alpine.js</title>
 </head>
 
 <body class="h-screen bg-gray-200">
 
-  <main class="container p-10 mx-auto" x-data="data()" x-init="init($watch)">
+  <main class="container p-10 mx-auto" x-data="data()" x-init="init()">
 
-    <label class="block">
+    <label class="block max-w-md mx-auto">
       <span class="font-semibold">Beruf</span>
       <select class="block w-full shadow form-select" @input="handelJobSelect($event)">
-        <option :value="null" default disabled>Beruf Wählen</option>
+        <option :value="null" default disabled>Beruf wählen</option>
         <template x-for="beruf in berufe">
           <option :key="beruf.beruf_id" :value="beruf.beruf_id" :selected="beruf.beruf_id === jobId" x-text="beruf.beruf_name"></option>
         </template>
@@ -29,10 +29,10 @@
           <hr class="h-px text-gray-500" />
         </div>
       </div>
-      <label class="block">
+      <label class="block max-w-md mx-auto">
         <span class="font-semibold">Klasse</span>
         <select class="block w-full shadow form-select" @input="handelClassSelect($event)">
-          <option :value="null" :selected="classId === ''" default disabled>Klasse Wählen</option>
+          <option :value="null" :selected="classId === ''" default disabled>Klasse wählen</option>
           <template x-for="klasse in klassen">
             <option :value="klasse.klasse_id" :selected="klasse.klasse_id === classId" x-text="klasse.klasse_name"></option>
           </template>
@@ -46,48 +46,51 @@
           <hr class="h-px text-gray-500" />
         </div>
       </div>
-      <div class="flex my-4 rounded shadow md:my-0 md:mb-4">
-        <button @click="subtractWeek()"
-          class="w-2/5 px-4 py-3 bg-white rounded-l hover:bg-blue-500 hover:text-gray-100">
-          &lt;
-        </button>
-        <div x-text="`Woche ${week}`" class="block w-full p-3 text-center bg-white select-none">
+      <div class="flex justify-center my-4 md:mb-4">
+        <div class="relative z-0 inline-flex shadow-sm">
+          <button @click="subtractWeek()" class="relative inline-flex items-center px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-l-md hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700">
+            &lt;
+          </button>
+          <div x-text="`Woche ${week}`" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-gray-700 bg-white border border-gray-300">
+          </div>
+          <button @click="addWeek()" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-r-md hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700">
+            &gt;
+          </button>
         </div>
-        <button @click="addWeek()" class="w-2/5 px-4 py-3 bg-white rounded-r hover:bg-blue-500 hover:text-gray-100">
-          &gt;
-        </button>
       </div>
     </div>
 
     <div x-show="!loadingLectures">
       <div x-show="lectures.length">
-        <div class="transition-all transform">
-          <table class="hidden w-full bg-gray-100 rounded shadow md:table">
-            <thead class="border-4 border-transparent rounded-t">
-              <tr class="">
-                <th class="px-4 text-left">Wochentag/Datum</th>
-                <th class="px-2">Von</th>
-                <th class="px-2">Bis</th>
-                <th class="px-4 text-left">Fach</th>
-                <th class="px-4 text-left">Lehrer</th>
-                <th class="px-4 text-left">Zimmer</th>
-                <th class="px-4 text-left">Bemerkung</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template x-for="lecture in lectures">
-                <tr class="h-12 text-sm border-b border-gray-200" :key="lecture.tafel_id">
-                  <td class="px-4" x-text="toHumanReadableDate(lecture.tafel_datum)"></td>
-                  <td class="px-2 text-center" x-text="toShortTime(lecture.tafel_von)"></td>
-                  <td class="px-2 text-center" x-text="toShortTime(lecture.tafel_bis)"></td>
-                  <td class="px-4" x-text="lecture.tafel_longfach"></td>
-                  <td class="px-4" x-text="lecture.tafel_lehrer"></td>
-                  <td class="px-4" x-text="lecture.tafel_raum"></td>
-                  <td class="px-4" x-text="lecture.tafel_kommentar"></td>
+      <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="hidden min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:inline-block sm:rounded-lg">
+            <table class="min-w-full">
+              <thead>
+                <tr>
+                  <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">Wochentag/Datum</th>
+                  <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">Von</th>
+                  <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">Bis</th>
+                  <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">Fach</th>
+                  <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">Lehrer</th>
+                  <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">Zimmer</th>
+                  <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">Bemerkung</th>
                 </tr>
-              </template>
-            </tbody>
-          </table>
+              </thead>
+              <tbody class="bg-white">
+                <template x-for="lecture in lectures">
+                  <tr :key="lecture.tafel_id">
+                    <td class="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap border-b border-gray-200" x-text="toHumanReadableDate(lecture.tafel_datum)"></td>
+                    <td class="px-6 py-4 text-sm font-medium leading-5 text-center text-gray-900 whitespace-no-wrap border-b border-gray-200" x-text="toShortTime(lecture.tafel_von)"></td>
+                    <td class="px-6 py-4 text-sm font-medium leading-5 text-center text-gray-900 whitespace-no-wrap border-b border-gray-200" x-text="toShortTime(lecture.tafel_bis)"></td>
+                    <td class="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap border-b border-gray-200" x-text="lecture.tafel_longfach"></td>
+                    <td class="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap border-b border-gray-200" x-text="lecture.tafel_lehrer"></td>
+                    <td class="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap border-b border-gray-200" x-text="lecture.tafel_raum"></td>
+                    <td class="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap border-b border-gray-200" x-text="lecture.tafel_kommentar"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
           <ul class="mt-4 overflow-hidden bg-white rounded shadow md:hidden">
             <template x-for="lecture in lectures" :key="`${lecture.tafel_id}_mobile`">
               <li class="p-4 border-b border-gray-200">
@@ -125,16 +128,36 @@
         </div>
       </div>
 
-      <div x-show="!lectures.length">
-        <div class="p-4 text-center transition-all transform bg-white rounded shadow">
+      <template x-if="!lectures.length">
+        <div class="max-w-md p-4 mx-auto text-center bg-white rounded shadow">
           <p class="font-semibold text-gray-800">
             Es liegt kein Stundenplan für den gewünschten Zeitraum vor.
           </p>
         </div>
+      </template>
+    </div>
+
+    <!-- error message -->
+    <div class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end">
+      <div x-show="error"
+        x-transition:enter="transform ease-out duration-300 transition"
+        x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+        x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+        class="w-full max-w-sm bg-white rounded-lg shadow-lg pointer-events-auto">
+        <div class="p-4 overflow-hidden rounded-lg shadow-xs">
+          <div class="flex items-start">
+            <div class="ml-3 w-0 flex-1 pt-0.5">
+              <p class="text-sm font-medium leading-5 text-red-700">
+                Error! Please reload the page
+              </p>
+              <p class="mt-1 text-sm leading-5 text-gray-500" x-text="error">
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>
-
 
   <script>
     const dateCalc = createWeekCalculator()
@@ -149,17 +172,25 @@
         lectures: [],
         loadingClass: true,
         loadingLectures: true,
+        error: null,
+        showError: false,
         init() {
+          // Register all watchers and load saved state
           this.useJobs()
           this.useClasses()
           this.useLectures()
           this.usePersistedState('jobId', true)
           this.usePersistedState('classId')
+          this.$watch('error', (val) => {
+            this.showError = (val !== null) ? false : true
+          })
         },
         usePersistedState(key, destructive = false) {
+          // restore state
           let urlKey = new URLSearchParams(window.location.search).get(key)
           this[key] = urlKey || localStorage.getItem(key) || ''
 
+          // watch key for change
           this.$watch(key, (state) => {
             if (state !== '' && state !== null) {
               let url
@@ -183,14 +214,22 @@
           this.classId = $event.target.value
         },
         async useJobs() {
-          this.berufe = await getJobs()
+          try {
+            this.berufe = await getJobs()
+          } catch (error) {
+            this.error = error
+          }
         },
         useClasses() {
           this.$watch('jobId', async () => {
             if (this.jobId !== '' && this.jobId !== null) {
               this.loadingClass = true
-              this.klassen = await getClasses(this.jobId)
-              this.loadingClass = false
+              try {
+                this.klassen = await getClasses(this.jobId)
+                this.loadingClass = false
+              } catch (error) {
+                this.error = error
+              }
             }
           })
         },
@@ -198,15 +237,18 @@
           const fetch = async () => {
             if (this.classId !== '' && this.classId !== null) {
               this.loadingLectures = true
-              lectures = await getLectures(this.classId, this.week)
-              this.lectures = lectures
-              this.loadingLectures = false
-              console.log(this.loadingLectures)
+              try {
+                lectures = await getLectures(this.classId, this.week)
+                this.lectures = lectures
+                this.loadingLectures = false
+                console.log(this.loadingLectures)
+              } catch (error) {
+                this.error = error
+              }
             }
           }
           this.$watch('classId', fetch)
           this.$watch('week', fetch)
-          this.$watch('lectures', (val) => console.log(val))
         },
         toHumanReadableDate(date) {
           return new Date(date).toLocaleDateString('de-CH', {
@@ -289,13 +331,17 @@
       return data
     }
     async function getLectures (classId, week) {
-      data = await fetch(`http://sandbox.gibm.ch/tafel.php?klasse_id=${classId}&woche=${week}`)
-        .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-      })
-      return data
+      try {
+        data = await fetch(`http://sandbox.gibm.ch/tafel.php?klasse_id=${classId}&woche=${week}`)
+          .then(res => {
+          if (res.ok) {
+            return res.json()
+          }
+        })
+        return data
+      } catch (error) {
+        throw error
+      }
     }
 
   </script>
