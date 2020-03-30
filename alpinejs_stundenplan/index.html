@@ -5,25 +5,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.2.2/dist/alpine.min.js" defer></script>
   <title>Alpine.js Stundenplan</title>
 </head>
 
 <body class="h-screen bg-gray-200">
 
-  <main class="container p-10 mx-auto" x-data="data()" x-init="() => getJobs()">
+  <main class="container p-10 mx-auto" x-data="data()" x-init="init($watch)">
 
     <label class="block">
       <span class="font-semibold">Beruf</span>
-      <select class="block w-full shadow form-select" x-model="currentJob" @input="getKlassen()">
-        <option :value="null" default>Beruf Wählen</option>
+      <select class="block w-full shadow form-select" @input="handelJobSelect($event)">
+        <option :value="null" default disabled>Beruf Wählen</option>
         <template x-for="beruf in berufe">
-          <option :key="beruf.beruf_id" :value="beruf.beruf_id" x-text="beruf.beruf_name"></option>
+          <option :key="beruf.beruf_id" :value="beruf.beruf_id" :selected="beruf.beruf_id === jobId" x-text="beruf.beruf_name"></option>
         </template>
       </select>
     </label>
 
-    <template x-if="currentJob">
+    <div x-show.transition="jobId">
       <div class="hidden sm:block">
         <div class="py-5">
           <hr class="h-px text-gray-500" />
@@ -31,180 +31,182 @@
       </div>
       <label class="block">
         <span class="font-semibold">Klasse</span>
-        <select class="block w-full shadow form-select" x-model="currentClass" :key="currentJob" @input="getLectures()">
-          <option :value="null" default>Klasse Wählen</option>
+        <select class="block w-full shadow form-select" @input="handelClassSelect($event)">
+          <option :value="null" :selected="classId === ''" default disabled>Klasse Wählen</option>
           <template x-for="klasse in klassen">
-            <option :value="klasse.klasse_id" x-text="klasse.klasse_name"></option>
+            <option :value="klasse.klasse_id" :selected="klasse.klasse_id === classId" x-text="klasse.klasse_name"></option>
           </template>
         </select>
       </label>
-    </template>
+    </div>
 
-    <template x-if="currentClass">
-      <div>
-        <div class="hidden sm:block">
-          <div class="py-5">
-            <hr class="h-px text-gray-500" />
-          </div>
+    <div x-show.transition="classId">
+      <div class="hidden sm:block">
+        <div class="py-5">
+          <hr class="h-px text-gray-500" />
         </div>
-        <div>
-        <div class="flex my-4 rounded shadow md:my-0 md:mb-4">
-          <button @click="subtractWeek()"
-            class="w-2/5 px-4 py-3 bg-white rounded-l hover:bg-blue-500 hover:text-gray-100">
-            &lt;
-          </button>
-          <div x-text="`Woche ${ getWeek()}`" class="block w-full p-3 text-center bg-white select-none">
-          </div>
-          <button @click="addWeek()" class="w-2/5 px-4 py-3 bg-white rounded-r hover:bg-blue-500 hover:text-gray-100">
-            &gt;
-          </button>
+      </div>
+      <div class="flex my-4 rounded shadow md:my-0 md:mb-4">
+        <button @click="subtractWeek()"
+          class="w-2/5 px-4 py-3 bg-white rounded-l hover:bg-blue-500 hover:text-gray-100">
+          &lt;
+        </button>
+        <div x-text="`Woche ${week}`" class="block w-full p-3 text-center bg-white select-none">
         </div>
-
-          <div x-show="lectures.length">
-            <table class="hidden w-full bg-gray-100 rounded shadow md:table">
-              <thead class="border-4 border-transparent rounded-t">
-                <tr class="">
-                  <th class="px-4 text-left">Wochentag/Datum</th>
-                  <th class="px-2">Von</th>
-                  <th class="px-2">Bis</th>
-                  <th class="px-4 text-left">Fach</th>
-                  <th class="px-4 text-left">Lehrer</th>
-                  <th class="px-4 text-left">Zimmer</th>
-                  <th class="px-4 text-left">Bemerkung</th>
-                </tr>
-              </thead>
-              <tbody>
-                <template x-for="lecture in lectures">
-                  <tr class="h-12 text-sm border-b border-gray-200">
-                    <td class="px-4" x-text="toHumanReadableDate(lecture.tafel_datum)"></td>
-                    <td class="px-2 text-center" x-text="toShortTime(lecture.tafel_von)"></td>
-                    <td class="px-2 text-center" x-text="toShortTime(lecture.tafel_bis)"></td>
-                    <td class="px-4" x-text="lecture.tafel_longfach"></td>
-                    <td class="px-4" x-text="lecture.tafel_lehrer"></td>
-                    <td class="px-4" x-text="lecture.tafel_raum"></td>
-                    <td class="px-4" x-text="lecture.tafel_kommentar"></td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
-            <ul class="mt-4 overflow-hidden bg-white rounded shadow md:hidden">
-              <template x-for="lecture in lectures">
-                <li class="p-4 border-b border-gray-200">
-                  <div>
-                    <span class="block text-sm font-semibold">Datum</span>
-                    <span x-text="toHumanReadableDate(lecture.tafel_datum)"></span>
-                  </div>
-                  <div>
-                    <span class="block text-sm font-semibold">Von/Bis</span>
-                    <time>
-                      <span x-text="toShortTime(lecture.tafel_von)"></span>
-                      -
-                      <span x-text="toShortTime(lecture.tafel_bis)"></span>
-                    </time>
-                  </div>
-                  <div>
-                    <span class="block text-sm font-semibold">Fach</span>
-                    <span x-text="lecture.tafel_longfach"></span>
-                  </div>
-                  <div>
-                    <span class="block text-sm font-semibold">Lehrer</span>
-                    <span x-text="lecture.tafel_lehrer"></span>
-                  </div>
-                  <div>
-                    <span class="block text-sm font-semibold">Raum</span>
-                    <span x-text="lecture.tafel_raum"></span>
-                  </div>
-                  <div x-show="lecture.tafel_kommentar">
-                    <span class="block text-sm font-semibold">Bemerkung</span>
-                    <span x-text="lecture.tafel_kommentar"></span>
-                  </div>
-                </li>
-              </template>
-            </ul>
-          </div>
-          <div x-show="!lectures.length" class="p-4 text-center bg-white rounded shadow">
-            <p class="font-semibold text-gray-800">
-              Es liegt kein Stundenplan für den gewünschten Zeitraum vor.
-            </p>
-          </div>
+        <button @click="addWeek()" class="w-2/5 px-4 py-3 bg-white rounded-r hover:bg-blue-500 hover:text-gray-100">
+          &gt;
+        </button>
       </div>
     </div>
-    </template>
+
+    <div x-show="!loadingLectures">
+      <div x-show="lectures.length">
+        <div class="transition-all transform">
+          <table class="hidden w-full bg-gray-100 rounded shadow md:table">
+            <thead class="border-4 border-transparent rounded-t">
+              <tr class="">
+                <th class="px-4 text-left">Wochentag/Datum</th>
+                <th class="px-2">Von</th>
+                <th class="px-2">Bis</th>
+                <th class="px-4 text-left">Fach</th>
+                <th class="px-4 text-left">Lehrer</th>
+                <th class="px-4 text-left">Zimmer</th>
+                <th class="px-4 text-left">Bemerkung</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="lecture in lectures">
+                <tr class="h-12 text-sm border-b border-gray-200" :key="lecture.tafel_id">
+                  <td class="px-4" x-text="toHumanReadableDate(lecture.tafel_datum)"></td>
+                  <td class="px-2 text-center" x-text="toShortTime(lecture.tafel_von)"></td>
+                  <td class="px-2 text-center" x-text="toShortTime(lecture.tafel_bis)"></td>
+                  <td class="px-4" x-text="lecture.tafel_longfach"></td>
+                  <td class="px-4" x-text="lecture.tafel_lehrer"></td>
+                  <td class="px-4" x-text="lecture.tafel_raum"></td>
+                  <td class="px-4" x-text="lecture.tafel_kommentar"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <ul class="mt-4 overflow-hidden bg-white rounded shadow md:hidden">
+            <template x-for="lecture in lectures" :key="`${lecture.tafel_id}_mobile`">
+              <li class="p-4 border-b border-gray-200">
+                <div>
+                  <span class="block text-sm font-semibold">Datum</span>
+                  <span x-text="toHumanReadableDate(lecture.tafel_datum)"></span>
+                </div>
+                <div>
+                  <span class="block text-sm font-semibold">Von/Bis</span>
+                  <time>
+                    <span x-text="toShortTime(lecture.tafel_von)"></span>
+                    -
+                    <span x-text="toShortTime(lecture.tafel_bis)"></span>
+                  </time>
+                </div>
+                <div>
+                  <span class="block text-sm font-semibold">Fach</span>
+                  <span x-text="lecture.tafel_longfach"></span>
+                </div>
+                <div>
+                  <span class="block text-sm font-semibold">Lehrer</span>
+                  <span x-text="lecture.tafel_lehrer"></span>
+                </div>
+                <div>
+                  <span class="block text-sm font-semibold">Raum</span>
+                  <span x-text="lecture.tafel_raum"></span>
+                </div>
+                <div x-show="lecture.tafel_kommentar">
+                  <span class="block text-sm font-semibold">Bemerkung</span>
+                  <span x-text="lecture.tafel_kommentar"></span>
+                </div>
+              </li>
+            </template>
+          </ul>
+        </div>
+      </div>
+
+      <div x-show="!lectures.length">
+        <div class="p-4 text-center transition-all transform bg-white rounded shadow">
+          <p class="font-semibold text-gray-800">
+            Es liegt kein Stundenplan für den gewünschten Zeitraum vor.
+          </p>
+        </div>
+      </div>
+    </div>
   </main>
 
 
   <script>
-    function createWeekCalc(initalDate) {
-      let date = initalDate ? new Date(initalDate) : new Date();
-      const getNumberOfWeek = (date) => {
-        const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-        const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
-        return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-      }
-      return {
-        getWeekString() {
-          const year = date.getFullYear()
-          const week = getNumberOfWeek(date)
-          return `${week}-${year}`
-        },
-        addWeek() {
-          const nextWeek = date.getTime() + 604800000
-          date.setTime(nextWeek)
-        },
-        subtractWeek() {
-          const previousWeek = date.getTime() - 604800000
-          date.setTime(previousWeek)
-        },
-      }
-    }
-
-    const date = createWeekCalc()
+    const dateCalc = createWeekCalculator()
 
     function data() {
       return {
-        currentJob: null,
-        currentClass: null,
+        jobId: null,
+        classId: null,
+        week: dateCalc.getWeekString(),
         berufe: [],
         klassen: [],
         lectures: [],
-        reset() {
-          this.klassen = []
-          this.lectures = []
-          this.currentClass = null
+        loadingClass: true,
+        loadingLectures: true,
+        init() {
+          this.useJobs()
+          this.useClasses()
+          this.useLectures()
+          this.usePersistedState('jobId', true)
+          this.usePersistedState('classId')
         },
-        getJobs() {
-          fetch('http://sandbox.gibm.ch/berufe.php')
-            .then(res => res.json())
-            .then(berufe => {
-              this.berufe = berufe
-            })
-        },
-        getKlassen() {
-          this.reset()
-          setTimeout(() => {
-          fetch(`http://sandbox.gibm.ch/klassen.php?beruf_id=${this.currentJob}`)
-            .then(res => {
-              if (res.ok) {
-                return res.json()
+        usePersistedState(key, destructive = false) {
+          let urlKey = new URLSearchParams(window.location.search).get(key)
+          this[key] = urlKey || localStorage.getItem(key) || ''
+
+          this.$watch(key, (state) => {
+            if (state !== '' && state !== null) {
+              let url
+              if (destructive) {
+                localStorage.clear()
+                url = new URLSearchParams('')
+              } else {
+                url = new URLSearchParams(window.location.search)
               }
-            })
-            .then(klassen => {
-              this.klassen = klassen
-            })
-          }, 50)
+              localStorage.setItem(key, state)
+              url.set(key, state)
+              window.history.replaceState(null, 'search', `?${url.toString()}`)
+            }
+          })
         },
-        getLectures() {
-          setTimeout(() => {
-            fetch(`http://sandbox.gibm.ch/tafel.php?klasse_id=${this.currentClass}&woche=${this.getWeek()}`)
-              .then(res => {
-                if (res.ok) {
-                  return res.json()
-                }
-              })
-              .then(lectures => {
-                this.lectures = lectures
-              })
-          }, 50)
+        handelJobSelect($event) {
+          this.classId = ''
+          this.jobId = $event.target.value
+        },
+        handelClassSelect($event) {
+          this.classId = $event.target.value
+        },
+        async useJobs() {
+          this.berufe = await getJobs()
+        },
+        useClasses() {
+          this.$watch('jobId', async () => {
+            if (this.jobId !== '' && this.jobId !== null) {
+              this.loadingClass = true
+              this.klassen = await getClasses(this.jobId)
+              this.loadingClass = false
+            }
+          })
+        },
+        useLectures() {
+          const fetch = async () => {
+            if (this.classId !== '' && this.classId !== null) {
+              this.loadingLectures = true
+              lectures = await getLectures(this.classId, this.week)
+              this.lectures = lectures
+              this.loadingLectures = false
+              console.log(this.loadingLectures)
+            }
+          }
+          this.$watch('classId', fetch)
+          this.$watch('week', fetch)
+          this.$watch('lectures', (val) => console.log(val))
         },
         toHumanReadableDate(date) {
           return new Date(date).toLocaleDateString('de-CH', {
@@ -217,19 +219,85 @@
         toShortTime(time) {
           return time.slice(0, 5)
         },
-        getWeek() {
-          return date.getWeekString()
-        },
         addWeek() {
-          date.addWeek()
-          this.getLectures()
+          dateCalc.addWeek()
+          this.week = dateCalc.getWeekString()
         },
         subtractWeek() {
-          date.subtractWeek()
-          this.getLectures()
+          dateCalc.subtractWeek()
+          this.week = dateCalc.getWeekString()
         }
       }
     }
+
+    function createWeekCalculator(initialDate) {
+        let date = initialDate ? new Date(initialDate) : new Date()
+        const WEEK = 604800000
+        const DAY = 86400000
+        /**
+         * Private Function for calculating the Week
+         * @param {Date} date
+         */
+        const _getWeekAndYearString = (date) => {
+          // Temporary date to prevent mutation
+          const tempDate = new Date(date.valueOf())
+          tempDate.setHours(0,0,0,0)
+          // Set to the nearest Thursday (current date + 4 - current day number)
+          tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7))
+          // Get first day of year
+          const yearStart = new Date(tempDate.getFullYear(),0,1)
+          // Calculate full weeks to nearest Thursday
+          const weekNumber = Math.ceil((((tempDate - yearStart) / DAY) + 1)/7)
+          // Return ISO week number and Year
+          return `${weekNumber}-${yearStart.getFullYear()}`
+        }
+
+      return {
+        getWeekString() {
+          return _getWeekAndYearString(date)
+        },
+        addWeek() {
+          const nextWeek = date.getTime() + WEEK
+          date.setTime(nextWeek)
+        },
+        subtractWeek() {
+          const previousWeek = date.getTime() - WEEK
+          date.setTime(previousWeek)
+        },
+        reset() {
+          date = new Date()
+        }
+      }
+    }
+
+    async function getJobs () {
+      data = await fetch(`http://sandbox.gibm.ch/berufe.php?`)
+        .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+      })
+      return data
+    }
+    async function getClasses (jobId) {
+      data = await fetch(`http://sandbox.gibm.ch/klassen.php?beruf_id=${jobId}`)
+        .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+      })
+      return data
+    }
+    async function getLectures (classId, week) {
+      data = await fetch(`http://sandbox.gibm.ch/tafel.php?klasse_id=${classId}&woche=${week}`)
+        .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+      })
+      return data
+    }
+
   </script>
 </body>
 
