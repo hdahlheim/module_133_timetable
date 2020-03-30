@@ -75,15 +75,15 @@ export default {
     Pagination,
   },
   setup() {
-    let jobId = usePersistedState('jobID', true)
-    let classId = usePersistedState('classID')
-    let { weekString } = useWeekCalculator()
+    const jobId = usePersistedState('jobID', true)
+    const classId = usePersistedState('classID')
+    const { weekString } = useWeekCalculator()
 
-    let jobs = useJobs()
+    const jobs = useJobs()
 
-    let classes = useClasses(jobId)
+    const classes = useClasses(jobId)
 
-    let lectures = useLectures(classId, weekString)
+    const lectures = useLectures(classId, weekString)
 
     const handelJobSelect = val => {
       classId.value = ''
@@ -94,7 +94,7 @@ export default {
       classId.value = val
     }
 
-    let error = ref(null)
+    const error = ref(null)
 
     onErrorCaptured(e => {
       console.log(e)
@@ -118,7 +118,9 @@ export default {
 </script>
 
 <style>
+/* purgecss start ignore */
 @tailwind base;
 @tailwind components;
+/* purgecss end ignore */
 @tailwind utilities;
 </style>
