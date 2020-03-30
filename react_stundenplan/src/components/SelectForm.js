@@ -2,7 +2,7 @@ import React from 'react'
 
 function SelectForm({ name, value, onChange, options }) {
   return (
-    <label className="block transition-opacity">
+    <label className="block max-w-md mx-auto transition-opacity">
       <span className="font-semibold">{name}</span>
       <select
         className="block w-full shadow form-select"

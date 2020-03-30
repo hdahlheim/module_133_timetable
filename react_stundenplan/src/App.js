@@ -13,11 +13,14 @@ import LectureTable from './components/LectureTable'
 import Navigation from './components/Navigation'
 
 function App() {
+  // get presisted data
   let [selectedJob, setSelectedJob] = usePersistedState('jobId', true)
   let [selectedClass, setSelectedClass] = usePersistedState('classId')
 
+  // get week
   let { getWeekString } = useDateCalc()
 
+  // get data
   let { jobs: berufe, loading: loadingJobs } = useJobs()
   let { schoolClasses, loading: loadingClass } = useSchoolClass(selectedJob)
   let { schdual, loading: loadingSchdual } = useSchdual(
@@ -25,6 +28,7 @@ function App() {
     getWeekString
   )
 
+  // handel selects
   let handelSelect = event => {
     setSelectedClass('')
     setSelectedJob(event.target.value)

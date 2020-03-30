@@ -2,12 +2,20 @@ import React, { useEffect, useContext, useState } from 'react'
 import { useWeekCalculator } from './dateCalc'
 import { getKlassen, getBerufe, getZeitTafel } from './api'
 
+/**
+ * Persist date throughout page reloads. Data is saved in the url and in localstorage
+ *
+ * @param {String} key
+ * @param {Boolean} destructive
+ */
 export function usePersistedState(key, destructive = false) {
+  // get saved state
   const [state, setState] = useState(() => {
     let urlKey = new URLSearchParams(window.location.search).get(key)
     return urlKey || localStorage.getItem(key) || ''
   })
 
+  // watch state for changes
   useEffect(() => {
     if (key && state) {
       let url
@@ -26,12 +34,15 @@ export function usePersistedState(key, destructive = false) {
   return [state, setState]
 }
 
+// Wrapper for react reactivity
 export function useJobs() {
   let [jobs, setJobs] = useState([])
   let [loading, setLoading] = useState(true)
   let [error, setError] = useState(null)
 
+  // run sideeffect
   useEffect(() => {
+    // variable for cleanup tracking
     let isCurrent = true
 
     const jobs = async () => {
@@ -47,6 +58,7 @@ export function useJobs() {
     jobs()
 
     return () => {
+      // if component gets unmounted this prevents state changes from pending promises
       isCurrent = false
     }
   }, [])
@@ -54,6 +66,7 @@ export function useJobs() {
   return { jobs, loading, error }
 }
 
+// Wrapper for react reactivity
 export function useSchoolClass(jobId) {
   let [schoolClasses, setSchoolClasses] = useState([])
   let [loading, setLoading] = useState(true)
@@ -84,6 +97,7 @@ export function useSchoolClass(jobId) {
   return { schoolClasses, loading, error }
 }
 
+// Wrapper for react reactivity
 export function useSchdual(classId, week) {
   let [schdual, setSchdual] = useState([])
   let [loading, setLoading] = useState(true)
@@ -116,6 +130,7 @@ export function useSchdual(classId, week) {
 
 const DateCalcContext = React.createContext(null)
 
+// provides weekcalc for all childcomponents
 export function DateCalcProvider({ children }) {
   const weekCalc = useWeekCalculator()
   return (
@@ -125,6 +140,7 @@ export function DateCalcProvider({ children }) {
   )
 }
 
+// injection helper
 export function useDateCalc() {
   return useContext(DateCalcContext)
 }

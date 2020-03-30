@@ -12,74 +12,88 @@ export function LectureRow({ lecture }) {
   const toShortTime = time => time.slice(0, 5)
 
   return (
-    <tr className="h-12 text-sm border-b border-gray-200">
-      <td className="px-4">{toHumanReadableDate(lecture.tafel_datum)}</td>
-      <td className="px-2 text-center">{toShortTime(lecture.tafel_von)}</td>
-      <td className="px-2 text-center">{toShortTime(lecture.tafel_bis)}</td>
-      <td className="px-4">{lecture.tafel_longfach}</td>
-      <td className="px-4">{lecture.tafel_lehrer}</td>
-      <td className="px-4">{lecture.tafel_raum}</td>
-      <td className="px-4">{lecture.tafel_kommentar}</td>
+    <tr>
+      <td className="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap border-b border-gray-200">
+        {toHumanReadableDate(lecture.tafel_datum)}
+      </td>
+      <td className="px-6 py-4 text-sm font-medium leading-5 text-center text-gray-900 whitespace-no-wrap border-b border-gray-200">
+        {toShortTime(lecture.tafel_von)}
+      </td>
+      <td className="px-6 py-4 text-sm font-medium leading-5 text-center text-gray-900 whitespace-no-wrap border-b border-gray-200">
+        {toShortTime(lecture.tafel_bis)}
+      </td>
+      <td className="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap border-b border-gray-200">
+        {lecture.tafel_longfach}
+      </td>
+      <td className="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap border-b border-gray-200">
+        {lecture.tafel_lehrer}
+      </td>
+      <td className="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap border-b border-gray-200">
+        {lecture.tafel_raum}
+      </td>
+      <td className="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap border-b border-gray-200">
+        {lecture.tafel_kommentar}
+      </td>
     </tr>
   )
 }
 
-export function LectureTableLoading() {
+function TableHeader(params) {
   return (
-    <table className="w-full transition-all bg-gray-100 rounded shadow">
-      <thead className="h-12 border-b-2 rounded-t">
-        <tr>
-          <th className="px-4 text-left">Wochentag/Datum</th>
-          <th className="px-2">Von</th>
-          <th className="px-2">Bis</th>
-          <th className="px-4 text-left">Fach</th>
-          <th className="px-4 text-left">Lehrer</th>
-          <th className="px-4 text-left">Zimmer</th>
-          <th className="px-4 text-left">Bemerkung</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr className="h-12 text-sm border-b border-gray-200">
-          <td className="px-4">Loading...</td>
-          <td className="px-2 text-center">Loading...</td>
-          <td className="px-2 text-center">Loading...</td>
-          <td className="px-4">Loading...</td>
-          <td className="px-4">Loading...</td>
-          <td className="px-4">Loading...</td>
-          <td className="px-4">Loading...</td>
-        </tr>
-      </tbody>
-    </table>
+    <thead className="h-12 border-b-2 rounded-t">
+      <tr>
+        <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200">
+          Wochentag/Datum
+        </th>
+        <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase bg-gray-100 border-b border-gray-200">
+          Von
+        </th>
+        <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase bg-gray-100 border-b border-gray-200">
+          Bis
+        </th>
+        <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200">
+          Fach
+        </th>
+        <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200">
+          Lehrer
+        </th>
+        <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200">
+          Zimmer
+        </th>
+        <th className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase bg-gray-100 border-b border-gray-200">
+          Bemerkung
+        </th>
+      </tr>
+    </thead>
   )
 }
 
 export function LectureTable({ schdual }) {
   if (!schdual.length)
     return (
-      <div className="w-full transition-opacity bg-gray-100 rounded shadow">
-        <p className="p-8 font-semibold text-center">Keine Daten verfügbar</p>
+      <div className="w-full max-w-md mx-auto transition-opacity bg-gray-100 rounded shadow">
+        <p className="p-8 font-semibold text-center">
+          Keine Daten verfügbar! Wahrscheinlich findet in dieser Woche kein
+          Unterricht statt.
+        </p>
       </div>
     )
 
   return (
-    <table className="w-full transition-opacity bg-gray-100 rounded shadow">
-      <thead className="border-4 border-transparent rounded-t">
-        <tr>
-          <th className="px-4 text-left">Wochentag/Datum</th>
-          <th className="px-2">Von</th>
-          <th className="px-2">Bis</th>
-          <th className="px-4 text-left">Fach</th>
-          <th className="px-4 text-left">Lehrer</th>
-          <th className="px-4 text-left">Zimmer</th>
-          <th className="px-4 text-left">Bemerkung</th>
-        </tr>
-      </thead>
-      <tbody>
-        {schdual.map((lecture, index) => (
-          <LectureRow lecture={lecture} key={index} />
-        ))}
-      </tbody>
-    </table>
+    <div className="flex flex-col">
+      <div className="py-2 -my-2 overflow-x-auto rounded-lg sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div className="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 rounded-lg shadow">
+          <table className="min-w-full">
+            <TableHeader />
+            <tbody className="bg-white">
+              {schdual.map((lecture, index) => (
+                <LectureRow lecture={lecture} key={index} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   )
 }
 

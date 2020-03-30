@@ -1,5 +1,6 @@
 import { useReducer } from 'react'
 
+// react wrapper for week calc
 export function useWeekCalculator(initialDate = null) {
   const date = initialDate ? new Date(initialDate) : new Date()
   const WEEK = 604800000
