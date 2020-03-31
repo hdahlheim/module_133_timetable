@@ -40,7 +40,7 @@
       </label>
     </div>
 
-    <div x-show.transition="classId">
+    <div x-show="classId">
       <div class="hidden sm:block">
         <div class="py-5">
           <hr class="h-px text-gray-500" />
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <div x-show="!loadingLectures">
+    <div x-show="!hideLectures">
       <div x-show="lectures.length">
       <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div class="hidden min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:inline-block sm:rounded-lg">
@@ -170,8 +170,8 @@
         berufe: [],
         klassen: [],
         lectures: [],
-        loadingClass: true,
-        loadingLectures: true,
+        hideClass: true,
+        hideLectures: true,
         error: null,
         showError: false,
         init() {
@@ -223,10 +223,10 @@
         useClasses() {
           this.$watch('jobId', async () => {
             if (this.jobId !== '' && this.jobId !== null) {
-              this.loadingClass = true
+              this.hideClass = true
               try {
                 this.klassen = await getClasses(this.jobId)
-                this.loadingClass = false
+                this.hideClass = false
               } catch (error) {
                 this.error = error
               }
@@ -236,15 +236,17 @@
         useLectures() {
           const fetch = async () => {
             if (this.classId !== '' && this.classId !== null) {
-              this.loadingLectures = true
+              this.hideLectures = true
               try {
                 lectures = await getLectures(this.classId, this.week)
                 this.lectures = lectures
-                this.loadingLectures = false
-                console.log(this.loadingLectures)
+                this.hideLectures = false
+                console.log(this.hideLectures)
               } catch (error) {
                 this.error = error
               }
+            } else {
+              this.hideLectures = true
             }
           }
           this.$watch('classId', fetch)
