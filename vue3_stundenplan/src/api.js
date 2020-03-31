@@ -11,7 +11,7 @@ export async function getKlassen(id) {
 export async function getZeitTafel(id, week) {
   await wait()
   return fetch(
-    `https://sandbox.gibm.ch/tafel.php?klasse_id=${id}&woche=${week}`
+    `https://sandboxx.gibm.ch/tafel.php?klasse_id=${id}&woche=${week}`
   ).then(res => res.json())
 }
 

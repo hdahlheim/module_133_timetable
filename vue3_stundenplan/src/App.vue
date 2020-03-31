@@ -1,6 +1,6 @@
 <template>
   <main id="app" class="h-screen bg-gray-200">
-    <div class="container p-10 mx-auto">
+    <div class="container p-2 mx-auto sm:p-10">
       <div>
         <SelectForm
           :value="jobId"
@@ -52,7 +52,8 @@
         <p
           class="px-4 py-2 text-red-800 bg-red-300 border border-red-700 rounded-sm"
         >
-          {{ error }}
+          Uh oh. Something went wrong! Please reload the page.<br />
+          Error: {{ error }}
         </p>
       </div>
     </Portal>
@@ -101,8 +102,7 @@ export default {
     const error = ref(null)
 
     onErrorCaptured(e => {
-      console.log(e)
-      error.value = 'Uh oh. Something went wrong! Please reload the page.'
+      error.value = e
       return true
     })
 
