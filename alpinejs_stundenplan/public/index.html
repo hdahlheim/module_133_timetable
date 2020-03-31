@@ -11,7 +11,7 @@
 
 <body class="h-screen bg-gray-200">
 
-  <main class="container p-10 mx-auto" x-data="data()" x-init="init()">
+  <main class="container p-2 mx-auto sm:p-10" x-data="data()" x-init="init()">
 
     <label class="block max-w-md mx-auto">
       <span class="font-semibold">Beruf</span>
@@ -63,7 +63,7 @@
     <div x-show="!hideLectures">
       <div x-show="lectures.length">
       <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-        <div class="hidden min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:inline-block sm:rounded-lg">
+        <div class="hidden min-w-full overflow-hidden align-middle border-b border-gray-200 shadow md:inline-block sm:rounded-lg">
             <table class="min-w-full">
               <thead>
                 <tr>
@@ -241,7 +241,6 @@
                 lectures = await getLectures(this.classId, this.week)
                 this.lectures = lectures
                 this.hideLectures = false
-                console.log(this.hideLectures)
               } catch (error) {
                 this.error = error
               }
