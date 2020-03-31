@@ -16,7 +16,12 @@
     <label class="block max-w-md mx-auto">
       <span class="font-semibold">Beruf</span>
       <select class="block w-full shadow form-select" @input="handelJobSelect($event)">
-        <option :value="null" default disabled>Beruf wählen</option>
+        <option
+        :value="null"
+        default
+        :selected="jobId === '' || jobId === null"
+        disabled
+      >Beruf wählen</option>
         <template x-for="beruf in berufe">
           <option
             :key="beruf.beruf_id"
@@ -200,8 +205,8 @@
 
     function data() {
       return {
-        jobId: null,
-        classId: null,
+        jobId: '',
+        classId: '',
         week: dateCalc.getWeekString(),
         berufe: [],
         klassen: [],
@@ -249,11 +254,16 @@
         handelClassSelect($event) {
           this.classId = $event.target.value
         },
+        clearData() {
+          window.localStorage.clear()
+          window.history.replaceState(null, 'replace', '/')
+        },
         async useJobs() {
           try {
             this.berufe = await getJobs()
           } catch (error) {
             this.error = error
+            this.clearData()
           }
         },
         useClasses() {
@@ -265,6 +275,7 @@
                 this.hideClass = false
               } catch (error) {
                 this.error = error
+                this.clearData()
               }
             }
           })
@@ -279,6 +290,7 @@
                 this.hideLectures = false
               } catch (error) {
                 this.error = error
+                this.clearData()
               }
             } else {
               this.hideLectures = true
