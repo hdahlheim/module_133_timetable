@@ -40,7 +40,7 @@ function App() {
 
   return (
     <main className="h-screen bg-gray-200">
-      <div className="container p-10 mx-auto">
+      <div className="container p-2 mx-auto md:p-10">
         <Transition
           enterFrom="opacity-0"
           enter="duration-300 ease-out"
