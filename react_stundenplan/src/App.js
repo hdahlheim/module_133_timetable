@@ -5,7 +5,7 @@ import {
   useJobs,
   useSchoolClass,
   useDateCalc,
-  useSchdual,
+  useSchedule,
   usePersistedState,
 } from './hooks'
 import { Transition } from './components/Transition'
@@ -23,7 +23,7 @@ function App() {
   // get data
   let { jobs: berufe, loading: loadingJobs } = useJobs()
   let { schoolClasses, loading: loadingClass } = useSchoolClass(selectedJob)
-  let { schdual, loading: loadingSchdual } = useSchdual(
+  let { schedule, loading: loadingSchedule } = useSchedule(
     selectedClass,
     getWeekString
   )
@@ -100,9 +100,9 @@ function App() {
               leaveFrom="opacity-100"
               leave="duration-200 ease-in"
               leaveTo="opacity-0"
-              show={!loadingSchdual}
+              show={!loadingSchedule}
             >
-              <LectureTable schdual={schdual} />
+              <LectureTable schedule={schedule} />
             </Transition>
           </Fragment>
         )}

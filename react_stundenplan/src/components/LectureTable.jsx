@@ -38,7 +38,7 @@ export function LectureRow({ lecture }) {
   )
 }
 
-function TableHeader(params) {
+function TableHeader() {
   return (
     <thead className="h-12 border-b-2 rounded-t">
       <tr>
@@ -68,8 +68,8 @@ function TableHeader(params) {
   )
 }
 
-export function LectureTable({ schdual }) {
-  if (!schdual.length)
+export function LectureTable({ schedule }) {
+  if (!schedule.length)
     return (
       <div className="w-full max-w-md mx-auto transition-opacity bg-gray-100 rounded shadow">
         <p className="p-8 font-semibold text-center">
@@ -86,7 +86,7 @@ export function LectureTable({ schdual }) {
           <table className="min-w-full">
             <TableHeader />
             <tbody className="bg-white">
-              {schdual.map((lecture, index) => (
+              {schedule.map((lecture, index) => (
                 <LectureRow lecture={lecture} key={index} />
               ))}
             </tbody>

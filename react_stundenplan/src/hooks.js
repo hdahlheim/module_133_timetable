@@ -98,8 +98,8 @@ export function useSchoolClass(jobId) {
 }
 
 // Wrapper for react reactivity
-export function useSchdual(classId, week) {
-  let [schdual, setSchdual] = useState([])
+export function useSchedule(classId, week) {
+  let [schedule, setSchedule] = useState([])
   let [loading, setLoading] = useState(true)
   let [error, setError] = useState(null)
 
@@ -111,7 +111,7 @@ export function useSchdual(classId, week) {
       setLoading(true)
       const entries = await getZeitTafel(classId, week).catch(e => setError(e))
       if (isCurrent) {
-        setSchdual(entries)
+        setSchedule(entries)
       }
       setLoading(false)
     }
@@ -125,7 +125,7 @@ export function useSchdual(classId, week) {
     }
   }, [classId, week])
 
-  return { schdual, loading, error }
+  return { schedule, loading, error }
 }
 
 const DateCalcContext = React.createContext(null)
