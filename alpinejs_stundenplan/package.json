@@ -12,7 +12,7 @@
   "dependencies": {},
   "devDependencies": {
     "cssnano": "^4.1.10",
-    "postcss": "^7.0.27",
+    "postcss": "^8.2.10",
     "postcss-cli": "^7.1.0",
     "tailwindcss": "^1.2.0",
     "@tailwindcss/custom-forms": "^0.2.1",
